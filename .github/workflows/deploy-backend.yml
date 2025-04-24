@@ -1,0 +1,25 @@
+name: Deploy Backend
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**'  # Trigger for any changes in the repository
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+        working-directory: ./
+      - uses: azure/webapps-deploy@v3
+        with:
+          app-name: ZUniques-Hackathon-STG-WA-UAEN-01
+          package: ./
