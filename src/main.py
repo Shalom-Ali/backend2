@@ -4,10 +4,12 @@ from src.api import auth, learning
 
 app = FastAPI()
 
-# Allow frontend CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Update to your frontend URL in production
+    allow_origins=[
+        "https://ZUniques-Hackathon-STG-UAEN-02.azurewebsites.net",
+        "http://localhost:3000"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
