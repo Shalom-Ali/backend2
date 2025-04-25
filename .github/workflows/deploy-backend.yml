@@ -2,8 +2,6 @@ name: Deploy Backend
 on:
   push:
     branches: [main]
-    paths:
-      - '**'  # Trigger for any changes in the repository
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -15,9 +13,8 @@ jobs:
           python-version: '3.12'
       - name: Install Dependencies
         run: pip install -r requirements.txt
-        working-directory: ./
       - uses: azure/webapps-deploy@v3
         with:
           app-name: ZUniques-Hackathon-STG-WA-UAEN-01
           publish-profile: ${{ secrets.AZURE_BACKEND_PUBLISH_PROFILE }}
-          package: ./
+          package: .
