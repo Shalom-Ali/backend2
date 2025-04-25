@@ -1,6 +1,5 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from pydantic import BaseModel
-from src.models.user import User
 from src.services.db import CosmosDB
 
 router = APIRouter()
