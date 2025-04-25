@@ -1,14 +1,18 @@
 from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 from src.models.user import User
 from src.services.db import CosmosDB
 
 router = APIRouter()
 db = CosmosDB()
 
+class LoginRequest(BaseModel):
+    email: str
+
 @router.post("/login")
-async def login(email: str):
-    user = db.get_user(email)  # Simplified; use Entra ID in production
+async def login(request: LoginRequest):
+    user = db.get_user(request.email)
     if not user:
-        user = {"id": email, "email": email, "progress": {}, "preferences": []}
+        user = {"id": request.email, "email": request.email, "progress": {}, "preferences": []}
         db.upsert_user(user)
     return {"user_id": user["id"]}
