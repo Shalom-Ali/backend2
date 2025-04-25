@@ -1,22 +1,22 @@
 from fastapi import APIRouter
+from pydantic import BaseModel
 from src.services.db import CosmosDB
 
 router = APIRouter()
 db = CosmosDB()
 
+class ProgressUpdate(BaseModel):
+    module: str
+    progress: int
+
 @router.get("/content/{user_id}")
 async def get_content(user_id: str):
-    user = db.get_user(user_id)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    # Simplified personalization: recommend based on preferences
-    content = {"module": "math", "content": "Algebra basics"} if "math" in user.get("preferences", []) else {"module": "general", "content": "Intro to learning"}
-    return content
+    # Dummy content; integrate with Cosmos DB later
+    return {"module": "Intro to Python", "details": "Learn basics of Python programming"}
 
 @router.post("/progress/{user_id}")
-async def update_progress(user_id: str, module: str, progress: float):
-    user = db.get_user(user_id)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    db.update_progress(user_id, module, progress)
-    return {"status": "success"}
+async def update_progress(user_id: str, update: ProgressUpdate):
+    user = db.update_progress(user_id, update.module, update.progress)
+    if user:
+        return {"status": "Progress updated"}
+    return {"error": "User not found"}
