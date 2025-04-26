@@ -13,12 +13,13 @@ class CosmosDB:
             raise ValueError("COSMOS_ENDPOINT and COSMOS_KEY must be set")
         self.client = CosmosClient(url=endpoint, credential=key)
         self.database = self.client.get_database_client(os.getenv("DATABASE_NAME", "LearningDB"))
-        self.container = self.database.get_container_client(os.getenv("CONTAINER_NAME", "Users"))
+        self.users = self.database.get_container_client(os.getenv("CONTAINER_NAME", "Users"))
+        self.content = self.database.get_container_client("content")  # New container
 
     def get_user(self, user_id: str):
         try:
             query = "SELECT * FROM c WHERE c.id = @user_id"
-            items = list(self.container.query_items(
+            items = list(self.users.query_items(
                 query=query,
                 parameters=[{"name": "@user_id", "value": user_id}],
                 enable_cross_partition_query=True
@@ -28,7 +29,7 @@ class CosmosDB:
             return None
 
     def upsert_user(self, user: dict):
-        self.container.upsert_item(user)
+        self.users.upsert_item(user)
 
     def update_progress(self, user_id: str, module: str, progress: float):
         user = self.get_user(user_id)
@@ -37,3 +38,6 @@ class CosmosDB:
             self.upsert_user(user)
             return user
         return None
+
+    def store_content(self, content_doc: dict):
+        self.content.upsert_item(content_doc)
