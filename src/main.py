@@ -15,8 +15,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth.router, prefix="/auth")
-app.include_router(learning.router, prefix="/learning")
+app.include_router(auth, prefix="/auth")
+app.include_router(learning, prefix="/learning")
 
 @app.get("/")
 async def root():
