@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from src.api import auth, learning
+from src.api import auth, learning, ai
 
 app = FastAPI()
 
